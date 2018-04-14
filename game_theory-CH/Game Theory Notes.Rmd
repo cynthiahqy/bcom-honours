@@ -1,0 +1,1294 @@
+---
+title: "Game Theory Notes"
+author: "Cynthia Huang"
+date: "10/31/2016"
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+header-includes:
+  \usepackage{color}
+  \usepackage{multirow,array}
+  \usepackage{bm}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- Colors, Reminders -->
+\newcommand{\TK}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand{\slideref}[1]{\textcolor{magenta}{\textbf{[#1]}}}
+\newcommand{\suppref}[1]{\textcolor{blue}{\textbf{#1}}}
+
+<!-- Math -->
+\newcommand{\anglebrac}[1]{\langle #1 \rangle}
+\newcommand{\vertbrac}[1]{\lvert #1 \rvert}
+\newcommand{\LRA}{\Leftrightarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\sig}{\sigma}
+\newcommand{\sighat}{\hat{\sig}}
+\newcommand{\sigstar}{\sig^{*}}
+\newcommand{\B}{\beta}
+\newcommand{\Om}{\Omega}
+\newcommand{\om}{\omega}
+\newcommand{\gam}{\gamma}
+\newcommand{\Gam}{\Gamma}
+\newcommand{\eps}{\epsilon}
+\newcommand{\veceps}{\bm{\eps}}
+\newcommand{\noti}{_{-i}}
+\renewcommand{\i}{_i}
+\newcommand{\minmaxv}{\underline{v\i}}
+\newcommand{\IF}{\text{if }}
+\newcommand{\WHEN}{\text{when }}
+
+<!-- Eqn environs -->
+\setlength{\abovedisplayskip}{0pt}
+\setlength{\belowdisplayskip}{0pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+
+<!-- \twotwogame{A}{B}{L}{R}{a,l}{a,r}{b,l}{br} -->
+\newcommand{\twoPtwotwogame}[8]{
+    \begin{tabular}{cc|c|c|}
+      & \multicolumn{1}{c}{} & \multicolumn{2}{c}{P2}\\
+      & \multicolumn{1}{c}{} & \multicolumn{1}{c}{$#3$}  & \multicolumn{1}{c}{$#4$} \\\cline{3-4}
+      \multirow{2}*{P1}  & $#1$ & $#5$ & $#6$ \\\cline{3-4}
+      & $#2$ & $#7$ & $#8$ \\\cline{3-4}
+    \end{tabular}
+}
+\newcommand{\normformgame}{\anglebrac{N, (A_i), (u_i)}}
+\newcommand{\extenformgame}{\anglebrac{N,H,P,u\i}}
+\newcommand{\corrdevice}{\mathcal{C}}
+\newcommand{\Ginfty}{G^\infty}
+
+<!-- Images -->
+\newcommand{\sideimages}[4]{
+\begin{figure}[#4]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{#1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{#2}
+\end{minipage}
+\caption{#3}
+\end{figure}}
+
+\newcommand{\image}[4]{
+\begin{figure}[#4]
+\centering
+\includegraphics[width=#2\linewidth]{#1}
+\caption{#3 (#1)}
+\end{figure}
+}
+
+# Introduction
+
+## Game Theory
+- study of collective decision mking
+- multi-person strategic interactions, with interdependent payoffs
+
+## Games
+- Model of interactive decision mking
+
+ ---------------- -----------------
+ Cooperation       (sub)groups
+ Non-cooperation   individuals
+ Strategic         normal-form, simultaneous
+ Extensive         dynamic, sequential
+ Perfect Info      model, payoffs, actions all known
+ Imperfect Info    Bayesnian games
+ -----------------------------------
+
+
+## Solution Concepts
+Systematic description of outcomes that may emerge, and are usually positive, sometimes normative
+
+- IESDS 
+- Rationalisability 
+- Correlated equilibrium 
+- Nash equilibrium 
+- Evolutionary stable strategies 
+- Subgame perfect equilibrium 
+     - Forward induction (IEWDS) 
+- Bayesian Nash equilibrium 
+- Weak sequential equilibrium 
+- Differences between pooling and separating equilibria 
+- Babbling versus full-revelation equilibria 
+- The Dominance, and the Cho-Kreps Intuitive Criteria 
+- Self commitment and self signalling
+
+# Strategic Games with Perfect Information
+
+## Definition: Normal-form game
+
+\begin{gather*}
+\anglebrac{N, (A_i), (\succeq_i)} \text{ or } \anglebrac{N, (A_i), (u_i)}
+\intertext{where $\succeq_i$ can be represented by utility function $u_i : A \rightarrow \Reals$}
+\end{gather*}
+
+Example 2-player strategic game:
+
+\twoPtwotwogame{A}{B}{L}{R}{a_1,l_1}{a_2,r_1}{b_1,l_2}{b_2,r_2}
+
+- Finite set of $N$ players (Finite game)
+- For each player $i \in N$
+     - $A_i$: non-empty set of actions
+     - $\Delta A\i$: Space of proability measures over $A\i$
+     - Preference relation $\succeq_i$ on $A = \times_{j \in N}A_j$
+     - Complete, transitive, \TK{reflexive}, binary relation
+
+For a finite game:
+
+- $(x_i)_{i \in N}$ or $(x_i)$: *profile*
+     - collection of game objects (e.g. actions, action spaces, preference relations..)
+     - one object per player
+- $(x_i)_{j \in N\\{i}}$ or $(x_{-i})$
+     - list of all objects for all players except player $i$
+- $(x_{-i},x_i)$
+     - list $x_{-i}$, and element $x_i$, which form the profile $(x_i)$
+
+Strategies and pay-offs:
+
+\begin{align*}
+   (a\i) &: \text{Pure Strategy Profile}
+\\ u\i(a\i,a\noti) &: \text{payoff in PS outcome with profile strategy $(a\i$)}
+\\ (\sig\i) &: \text{Mixed Strategy Profile (collection of mixed strategies, one for each player)}
+\\ \sig\i &: \text{Element of of $\Delta A\i$}
+\\ \sig\i(a\i) &: \text{Probability of player $a\i$ under $\sig\i$}
+\\ \Pi_{i \in N} \sig\i(a\i)&: \text{Probability distribution over $\bm{A}$ incuded by profile of mixed strategy ($\sig\i$)}
+\\ U\i(\sig\i) = \sum_{a \in A} Pr(a \vert (\sig\i)) u_i(a) &: \text{von Neumann-Morgenstern Utility}
+\end{align*}
+
+- Pure strategy $a\i$ is equivalent to $\sig\i : \sig\i(a\i) = 1$
+- Extend to non-finite games using pdfs rather than discrete probabilities
+
+<!-- - $(a\i)$: Pure Strategy Profile -->
+<!-- - $\sig\i$: Element of of $\Delta A\i$ -->
+<!-- - $\sig\i(a\i)$: Probability of player $a\i$ under $\sig\i$   -->
+<!-- pure strategy $a\i$ is equivalent to $\sig\i : \sig\i(a\i) = 1$ -->
+<!-- - $\Pi_{i \in N} \sig\i(a\i)$: Probability distribution over $\bm{A}$ incuded by profile of mixed strategy -->
+
+<!-- \clearpage -->
+
+## Dominance Solvability:
+
+### Dominance and Strict Dominance Solvability
+
+For ___ **dominated strategy** $a_i, \ \exists \ a'_i$ s.t.
+
+ -----------  ----------------------------     ----      ------------------------- --------------------------
+ PS Strictly  $u_i(a_i,a_{-i}$)                $<$       $u_i(a'_i,a_{-i})$        $\forall a_{-i} \in A_{-i}$
+ MS Weakly    $U_i(\sig_i,\sig_{-i})$          $\leq$    $U_i(\sig'_i,\sig_{-i})$  $\forall a_{-i} \in A_{-i}$
+              $U_i(\sig_i,\sig_{-i})$          $<$       $U_i(\sig'_i,\sig_{-i})$  for some $a_{-i} \in A_{-i}$
+ -----------------------------------------------------------------------------------------------------
+
+For ___ **dominant strategy** $a_i, \forall a'_i \in A_i$
+
+ -----------  ----------------------------     ----      ------------------------- --------------------------
+ PS Strictly  $u_i(a_i,a_{-i}$)                $>$       $u_i(a'_i,a_{-i})$        $\forall a_{-i} \in A_{-i}$
+ MS Weakly    $U_i(\sig_i,\sig_{-i})$          $\geq$    $U_i(\sig'_i,\sig_{-i})$  $\forall a_{-i} \in A_{-i}$
+              $U_i(\sig_i,\sig_{-i})$          $>$       $U_i(\sig'_i,\sig_{-i})$  for some $a_{-i} \in A_{-i}$
+ -----------------------------------------------------------------------------------------------------
+
+- Playing a *strictly dominated* strategy is incompatible with rationality.
+- A player can have at most one *dominant* startegy (strict or weak)
+- If all players have *strictly dominant* strategies, the game is **strict dominance solvable**
+- If no two pure strategies can be ranked by dominance, consider mixed strategies
+       - EXAMPLE: \slideref{GT-L03-S4}
+
+## Iterated Elimination of Strictly Dominated Strategies (IESDS)
+
+### Solving for set of IESDS
+
+- identify *strictly dominated* strategies, remove, repeat
+- at least one strategy profile survives
+- remaining strategies are possible eqlbm strategies
+
+#### IESDS properities:
+- However, IESDS may not yield unique eqlbm prediction (e.g. if all outcomes survive)
+- Requires many levels of mutual knowledge of rationality
+
+#### EXAMPLES:
+- 2 player 3x3 game \slideref{GT-L02-S5-6}
+- Cournot Duopoly \slideref{GT-L02-S7}
+
+## Best-Response Correpsondence
+
+\begin{align*}
+\intertext{The best reponse correspondence for any $a\noti \in A\noti$:}
+   B_i(a\noti) &= \underset{a\i \in A\i}{\arg\max} u\i(a\i,a\noti)
+\\ B_i &: \text{identifies optimal strategy of $i$, when $i$ conjectures that other play list $a\noti$}
+\\     &: \text{not necessarily a singleton set, therefore correspondence not function}
+\intertext{The mixed strategy best reponse correspondence for any $i$ and $\sig\noti \in \Delta A\i$:}
+   B_i(\sig\noti) &= \underset{\sig\i \in \Delta A\i}{\arg\max} U\i(a\i,a\noti)
+\end{align*}
+
+## Nash Equilibrium (NE)
+
+### Definition
+
+Profile $(a_i)$ or $(\sig\i)$ of $\normformgame$ is:
+
+ -------  ---------------------------------------------
+ PSNE     $a\i \in B\i(a\noti) \quad \forall \ i \in N$
+ MSNE     $\sig\i \in B\i(a\noti) \quad \forall \ i \in N$
+ ------------------------------------------------------
+
+In NE:
+
+- Every player is best responding to the other players' actions
+- No player has a profitable deviation, *given* the actions other the other players
+- EXAMPLES: 2 player, 3x3 and 2x2 normal form games \slideref{GT-L02-S12}
+\begin{align*}
+\intertext{Support of $\sig\i$}
+\intertext{If $(\sig\i)$ is a MSNE, then action $a\i \in A\i$ is in the support of $\sig\i$ if $\forall a'\i \in A_i$}
+   \sig\i(a\i) > 0 &\LRA U\i(a\i,\sig\noti) \geq U\i(a'\i,\sig\noti)
+\intertext{Therefore, if two actions $a\i, a'\i$ are in the support of $\sig\i$:}
+   \sig\i(a\i) > 0 \text{ and } \sig\i(a'\i) >0 &\LRA U\i(a\i,\sig\noti) = U\i(a'\i,\sig\noti)
+\end{align*}
+
+### Computing Strategic Form NE
+
+1. Identify BR's and PSNE
+      a) any cell with all player's BR is a PSNE
+2. Identify possible MSNE \TK{dominated or dominant}
+      a) If there are no weakly *dominated* strategies, there are no MSNE where one player plays PS.
+          i. Find mixed strategy of P1 that makes P2 indifferent between actions
+          ii. Find mixed strategy of P2 that makes P1 indifferent between actions (therefore willing to play mixed strategy above)
+      b) If there are weakly *dominated strategies*, there will be MSNE where one players plays PS
+          i. Find mixed strategy that makes the pure strategy player willing to play the actions required to induce mixing from the other player
+
+### NE Properties
+
+- NE always survives IESDS
+- However, IESDS outcomes not necessarily NE
+- Possible to have multiple NE, or none in PS
+- PSNE is also a MSNE
+
+### NE Motivation
+
+Difficult to motivate epistemically (see discussion in \suppref{O an FT} for PSNE, \suppref{OR} for MSNE)
+
+- NE as learning outcome
+     - Same players play same game repeatedl
+     - In each new round, players' adjust strategy to a best response to other player's actions in last round
+     - Adjustment stops at NE
+     - However, require extensive learning, poor prediction of rare or one-shot strategic interactions \slideref{GT-L02-S16}
+- \TK{NE as evolutionary-stable eqlbm}
+- NE as a consequence of rationality
+     - Each player *correctly* predicts how others will play, and best responds to that *correct* prediction (eqlbm action)
+     - *correct* prediction comes from previous interactions with other players in population, or knowledge that other play is similarly rational, and will also known and best-respond to eqblm action
+- MSNE as objects of choice
+- MSNE as steady state
+     - e.g. For 2 populations of players (buyers/sellers), MSNE gives the proportion of pop. that chooses certain actions
+- MSNE as pure strategies with unobservables
+
+
+## Nash's Theorem
+
+***Every finite strategy game has a mixed-strategy equilibrium***
+
+### Kakutani's Fixed Point Theorem
+
+***A correspondence $C: X \ra 2^X$ has a fixed point if:***
+
+1. $X$ is a non-empty, compact, and convex subset of $\Reals^n$, and
+2. $C(x)$ is non-empty and convex for all $x$, and
+3. $C$ has a closed graph
+
+Explanation of KFPT \slideref{GT-L03-S10-11}
+
+### Proof of Nash's theorem
+
+Proof of Nash's Theorem using KFPT \slideref{GT-L03-S12-14}
+
+### Glicksberg's Theorem
+
+***Every game $\normformgame$ has a MSNE if:***
+
+1. Each $A_i$ is a compact subset of $\Reals^n$
+2. Each $u\i$ is continuous on $A$
+
+
+
+# Knowledge
+
+## States of the World
+
+\begin{align*}
+   \Om &: \text{space of mutually exclusive states of the world}
+\\ \om \in \Om &: \text{a SoW encodes all information relevant to the game}
+\end{align*}
+
+## Information Sets
+
+- Some information about a SoW is private or unknown, so some SoWs will be indistinguishable for certain agents
+- Modelled using an ***Information partion*** $I(\cdot)$ of $\Om$: 
+     - A collection of disjoint sets, whose union equals $\Om$
+     - Each set element in the partion is an ***information set***
+          \begin{align*}
+             \{S_1,\dots S_2\} &: \text{is a partition of $S$ if $\forall i \neq j$}
+          \\ S_i \cap S_j = \emptyset &\text{ and } \bigcup_{k=1}^n S_k = S
+          \end{align*}
+- If $\om' \in I(\om)$, then agent cannot distinguish between $\om, \om'$, since $\om \in I(\om')$
+
+## Events and Knowledge of Events
+
+- $E \subseteq \Om$: An event E is a weak subset of $\Om$
+- If $\om \in E$: Event $E$ is true at $\om \in \Om$
+- If $I(\om) \subseteq E$: an individual with the information partition $I(\cdot)$ knowns $E$ at $\om$
+     - \TK{i.e. agent knows $E$ has occured, if all SoWs where E occurs are observationally equivalent in the same set.}
+     - knows $E$ at $\om$ if all possible observationally equivalent SoWs in $I(\om)$ are in $E$
+- $KE = {\om \in \Om : I(\om) \subseteq E}$: $KE$ is the event an agent knows and event $E$
+- Interactive knowledge operators
+     - $K_1$ is agent 1's knowledge operator, which depends on $I_1(\cdot)$
+
+Card Game: \slideref{GT-L04-S12} 
+     
+### Properties of the Knowledge Operator
+
+\TK{GT-L04-S13}
+\begin{align*}
+   KE \subseteq E &:
+\\ KE \cap KE^c = \emptyset &:
+\\ KE = KKE
+\\ (KE)^c = K(KE)^c
+\end{align*}
+
+### Mutual and Common Knowledge
+
+\begin{align*}
+   w \in (MK)E &\equiv K_1 E \cap K_2 E \cap \dots K_n E 
+\\ w \in (CK)E &\equiv \bigcap_{n=1}^\infty (MK)^n E
+\end{align*}
+
+\TK{explanation from L05-S4}
+
+### Example: Three Crones \slideref{GT-L04-S15-end, GT-L05-S4-9}: 
+
+\image{GT-L05-S06-ThreeCrones}{0.5}{}{h}
+
+### Example: The Electronic Mail Game: \slideref{GT-L05-S10-15}
+
+\image{GT-L05-S12-ElectronicMail}{0.5}{}{h}
+
+## Priors and Posteriors
+
+**Prior Belief**: Belief held by an agent before she acquires any informatin (e.g. signal observation)
+**Posterior Belief**: Belief an agent has after acquiring information
+
+### Aumann's (1976) Agreement Theorem
+
+**Theorem**:
+
+- Suppose:
+      - $\Om$ is finite
+      - Agents 1 and 2 have the same *prior belief* on event E
+      - P1's *posterior* assigns $\eta_1$ to event E
+      - P2's *posterior belief* is $\eta_2$
+- If P1 and P2's *posteriors* are common knowledge:
+      - $\eta_1$ = $\eta2$
+      
+**Key Assumptions:**
+
+- Common prior
+- Common knowledge of rationality
+- Bayesian updating
+- Common knowledge of posteriors
+
+#### Intuition
+
+- If both P1 and P2 are rational, the only reason their beliefs differ are because of data differences
+- As soon as the beliefs are revealed, then the have access to each other's information (as summarised in beliefs)
+- Under *appropriate conditions*, their revised beliefs will necessarily be the same
+
+#### No-Trade Theorems
+
+Example: Equal bets for risk averse agents \slideref{GT-L05-S18}
+
+# Epistemic Foundations of Solution Concepts 
+
+## Correlated Equilibrium
+
+### Definition
+
+- Correlating Device $\corrdevice = \{\Om,(I\i),p\}$ 
+      - $\Om$: finite state space
+      - $I\i(\cdot)$: Information partition for each player
+      - $p$: discrete probability function over $\Om$
+- Strategy of player $i$ conditional on $\corrdevice$
+      - $s\i : \Om \ra A\i$ s.t. $s\i(\om) = s\i(\om')$ whenever $I\i(\om) = I\i(\om')$
+- Example:
+\begin{align*}
+   \Om = \{H,T\} &: \text{Heads or Tails}
+\\ \{ \{H\} \{T\} \} &: \text{common information partition}
+\\ p(H) = p(T) = 0.5 &: \text{probability function} 
+\\ s\i(H) = s\i(T) &: \text{take same action for SoWs in same information set}
+\end{align*}
+
+\begin{align*}
+\intertext{Correlated Equilibrium of $\normformgame$ consists of:}
+   \corrdevice &: \text{correlating device}
+\\ (s\i) &: \text{profile of strategies, conditional on $\corrdevice$}
+\intertext{such that for each $i \in N$ and any $s'i$ of $i$ conditional on $\corrdevice$:}
+   \sum_{\om \in \Om} p(\om) u\i (s\i(\om),s\noti(\om)) &\geq \sum_{\om \in \Om} p(\om) u\i (s'\i(\om),s\noti(\om))
+\\ p(\om) &: \text{probability that SoW is $\om$}
+\\ u\i(s\i(\om),s\noti(\om)) &: \text{utility of playing $s\i$ given $s\noti$}
+\end{align*}
+
+### Solving Correlated Equilibrium
+
+\TK{A2, L24}
+
+### Correlated Equilibrium Properties
+
+- Every PSNE is a correlated eqlbm
+      - correlating device could be anything, since PSNE is in BRs (regardless of state of world)
+- For every MSNE of $\normformgame$
+      - there exists a correlated eqlbm in which the induced probability distribution over outcomes ($p(\om\i,\om\noti)_{CE}$) is the same as in MSNE
+
+### Revelation Principle for Correlated Equilibrium
+
+\begin{align*}
+\intertext{For $\Om = A$, finding all $p$ that solves the eqlbm condition, is the same as finding all possible probability distributions over outcomes obtainable in a correlated eqlbm}
+   \sum_{\om \in \Om} p(\om) u\i (s\i(\om),s\noti(\om)) &\geq \sum_{\om \in \Om} p(\om) u\i (s'\i(\om),s\noti(\om))
+\end{align*}
+
+\begin{align*}
+    \Om &: \text{set of all possible combinations of actions, including nature's actions (i.e. $A = \times_{j \in N}A_j$)}
+\\ I\i(\cdot) &: \text{agents know only the action they should play, other player's possible actions are in the same info set}
+\\ p &: \text{restricted to ensure no player has incentive to deviate}
+\end{align*}
+
+## Rationalisability
+
+### Definition
+
+\TK{GT-L6-S10}
+In a normal form game $\normformgame$, an action $a\i$ is ***rationalisable*** if:
+
+- For each player $j$, there exists a set $Z_j \in A_j$ s.t.:
+    
+### Solving the set of Rationalisable Actions
+
+1. Begin with full action set for each player $(A_i)$
+2. Remove all actions that are never a BR, under *any* belief about opponents' action
+     - *no rational player would never play these actions*
+3. Remove all acitons that are never a BR to the *remaining* actions
+     - *all players know other players are rational (and will not play step 2. actions)*
+4. Repeat until no further actions are eliminated
+
+
+### Rationalisability results
+
+- Every player has at least one rationalisable pure strategy 
+- Every NE is a rationalisable equilibrium
+     - Any positive probability action in MSNE is rationalisable ($\sig\i(a\i) > 0 \LRA a\i \text{ rationalisable}$)
+- Rationalisable strategies are a weak superset of IESDS strategies (IESDS $\subseteq$ Rationalisable)
+     - In two player games: IESDS = Rationalisable
+
+## Knowledge conditions
+
+### Aumann & Brandenburger (1995)
+
+ ---------------------   -----------------------------
+ Structure of the game   players, strategies, payoffs
+ Rationality             maximise (expected) payoff
+ Belief                  about the strategy of another player
+ -----------------------------------------------------------
+
+\image{GT-L06-S21}{1}{}{h}
+
+\slideref{GT-L06-S12-22}
+
+## Evolutionarily State Strategies
+
+\slideref{GT-L06-S23-}
+Symmetric Two Player games:
+
+- within species competition
+- games are symmetric 
+      - same strategy set $A_1 = A_2 = \{A,B\}$
+      - symmetric payoffs $u_1(A,B) = u_2(B,A) = u(A,B)$
+- payoffs measure fitness
+- predict which strategy survive evoluntionary pressure
+
+\begin{align*}
+a &: \text{current strategy for all individuals (P1,P2)}
+\\ b \neq a &: \text{strategy played by small $\eps$ mutant population}
+\\ U_{reg} &= (1-\eps)u(a,a) + \eps u(a,b)
+\\ U_{mut} &= (1-\eps)u(b,a) + \eps u(b,b)
+\intertext{If $U_{reg} > U_{mut}$, for all $b$, and small enough $\eps$, the strategy $a$ prevails}
+   U_{reg} > U_{mut} &: u(a,a) > u(b,a) \text{ or,}
+\\                   &: u(a,a) > u(b,a) \text{ and } u(a,b) > u(b,b)
+\intertext{If $U_{mut} > U_{reg}$, mutant population will take over, and $b$ will the surviving strategy}
+\end{align*}
+
+- $a$ is a best response to $a$
+- $b$ is a BR to $a$
+- playing $a$ against $b$ yields higher payoffs than $b$, stick with $a$
+
+### Definition
+
+An ***evolutionary stable strategy*** of a symmetric game is an action $a$ for which:
+
+- $(a,a)$ is a NE, and
+- $u(a,b) > u(b,b)$ for every BR $b$ to $a$, where $b \neq a$
+
+# Static Games with Incomplete Information
+\slideref{L07}
+## Bayes Rule
+\begin{align*}
+   Pr(A \vert B) &= \frac{Pr(B \vert A) Pr(A)}{Pr(B)}
+\\ Pr(B) &= Pr(B \vert A) Pr(A) + Pr(B \vert A^C)Pr(A^C)
+\intertext{If A and B are independent}
+   Pr(A \vert B) &= Pr(A)
+\end{align*}
+
+Example: Bayes Rule \slideref{GT-L07-S06}
+
+## Definition: Static Bayesian game
+
+\begin{align*}
+\intertext{A Static Bayesian game consists of}
+   N &: \text{finite set of players}
+\\ \Om &: \text{finite set of SoWs}
+\\ \Om = \Pi\i \Theta\i &: \text{all possible combinations of player types}
+\\ A\i &: \text{set of actions for player $i$}
+\\ \Theta\i &: \text{finite set of signals for each player $i$}
+\\ \theta\i &: \text{element of $\Theta\i$, \textit{types}}
+\\ \tau\i : \Om \ra \Theta\i &: \text{function that maps SoWs to signals}
+\\ p\i \vert \theta\i &: \text{a belief of player $i$, conditional on signal $\theta\i \in \Theta$}
+\\ u\i: A \times \Om \ra \Reals &: \text{utility function}
+\intertext{Strategies:}
+   s\i : \Theta\i \ra A\i &: \text{Pure strategy for player $i$}
+\\ s\i : \Theta\i \ra \Delta A\i &: \text{Mixed strategy for player $i$}
+\\ s\i(\theta\i) &: \text{strategy that player $i$ chooses if her type is $\theta\i$}
+\end{align*}
+
+## NE: Bayesian Games
+
+### Pure Strategy Bayesian NE (PSBNE)
+
+A profile of pure strategies $(s\i)$ is a PSBNE if for every player $i$, type $\theta\i \in \Theta$, and action $a\i in A\i$:
+\begin{align*}
+   \sum_{\om \in \tau\i^{-1}} (\theta\i) p\i (\om \vert \theta\i) u\i (s\i(\theta\i),s\noti(\tau\noti(\om));\om)
+&\geq \sum_{\om \in \tau\i^{-1}} (\theta\i) p\i (\om \vert \theta\i) u\i (a\i,s\noti(\tau\noti(\om));\om)
+\\ \tau\i^{-1}(\theta\i) &: \text{inverse function that maps signals to possible SoWs}
+\end{align*}
+
+### Example 1: Second Price Auction
+
+\begin{align*}
+   v\i &: \text{valuation that each player $i \in N$ attaches to auction item}
+\\ v\i \sim U[0,1] &: \text{valuations i.i.d on uniform distribution}
+\\ \Theta\i = [0,1] &: \text{all possible types of player $i$}
+\\ \Om = \Pi\i\Theta\i &: \text{all possible combinations of valuations}
+\\ \tau\i(\om) = v\i &: \text{each player knows their own valuation}
+\\ A\i = \Reals_{+} &: \text{players can bid any positive amount}
+\\ \text{posterior belief} &: v\noti \vert v\i = U[0,1]^{\lvert N \rvert - 1}
+\\ \text{utility} &: \text{if winning bid: valuation less payment, zero otherwise}
+\end{align*}
+
+- truthful bidding ($a\i = v\i$) is a Bayesian NE
+- other NE include really high bids by one player, and zero by other players; no incentive to deviate
+
+### Example 2: More information is not necessarily better
+
+\TK{GT-L07-S12}
+
+### Example 3: Jury Voting
+
+\TK{GT-L07-S13}
+
+## Harsanyi's Purification Theorem
+
+\TK{GT-L08-S03-04}
+
+\begin{align*}
+   \text{finite strategic game} &: G = \normformgame
+\\ \text{collection of random variables} &: \veceps = (\eps\i(a))_{i \in N, a \in A}
+\\ \text{Perturbed game} &: G(\gam\veceps)
+\\ u\i(a) + \eps\i(a) &: \text{payoff for each player $i$, and observation $\eps\i(a)$}
+\end{align*}
+
+For almost any $G$, and any $\veceps$: 
+
+***The PSBNE of $G(\gam\veceps)$, will converge to the MSNE of $G$, as $\gam \ra 0$***
+
+# Extensive Form Games with Perfect Information
+
+## Defintion: Finite Extensive Form game with perfect information
+
+\begin{align*}
+\intertext{A finite extensive-form game with perfect information is denoted}
+   \Gam = \anglebrac{N,H,P,u\i} 
+\intertext{and consists of:}
+   N &: \text{set of players}
+\\ H &: \text{set of histories}
+\\   &: \emptyset \in H
+\\   &: (a^k)_{k=1}^K \in H \Leftarrow (a^k)_{k=1}^L \text{ when } L < K
+\\ Z \subseteq H &:  \text{set of terminal histories}
+\\   &: (a^k)_{k=1}^K \text{ is terminal if } \nexists a^{K+1} \text{ s.t. } (a^k)_{k=1}^{K=1} \in H
+\\ P : H \slash Z \ra N &: \text{player function}
+\\ (u\i) &: \text{utility fnc profile on $Z$}
+\intertext{After an non-terminal history $h$, player $P(h)$ can choose an action from $A(h) = {a : (h,a) \in H}$}
+   A(h) = {a : (h,a) \in H} &: \text{set of all possible actions at history $h$}
+\\ S\i : \{h : P(h) = i\} \ra {a : (h,a) \in H}  &: \text{strategy is fuction that assigns possible action to each history for player i}
+\\ O((s\i)) &: \text{outcome if every player $i$ follows strategy $s\i \in (s\i)$}
+\end{align*}
+
+### Extensive form example
+
+\sideimages{GT-L08-S07}{GT-L08-S13}{Example: extensive, strategic, reduced strategic form}{h}
+
+\begin{align*}
+   N &= \{P1,P2\}
+\\ H &= \{\emptyset,A,B,(B,C),(B,D),(B,D,E),(B,D,F)\}
+\\ Z &= \{A,(B,C), (B,D,E),(B,D,F)\}
+\\ P(h) &= \begin{cases}
+   P1 &\IF h = \emptyset, (B,D) \\
+   P2 &\IF h = B
+   \end{cases}
+\\ u(h) &= (u_1,u_2) 
+\\ &= \begin{cases}
+   (a,b) &\IF h = A \\
+   (c,d) &\IF h = (B,C) \\
+   (e,f) &\IF h = (B,D,E) \\
+   (g,h) &\IF h = (B,D,F) \\
+   \end{cases}
+\\ S_1(h) &= \begin{cases}
+   a_11 \in \{A,B\} &\WHEN h = \emptyset \\
+   a_12 \in \{E,F\} &\WHEN h = (B,D) 
+   \end{cases}
+\\ s_1 &\in \{ (A,E);(A,F);(B,E);(B,F) \} 
+\\ S_2(h) &= \begin{cases}
+   a_2 \in \{C,D\} &\WHEN h = B set \\
+   \end{cases}
+\end{align*}
+
+## PSNE: Finite extensive form games w perfect information
+
+A strategy profile $(s\i)$ forms a NE of an extensive form game if for all strategies $s'\i$ of any player $i \in N$:
+\begin{align*}
+u\i(O(s\i,s\noti)) \geq u\i(O(s'\i,s\noti)) \quad \forall s'\i, \ i \in N
+\end{align*}
+
+### Computing Extensive Form NE: 
+
+1. Express game in strategic normal form
+2. Find NE of normal form game as usual
+
+### NE and incredible threats
+
+\image{GT-L08-S15}{0.5}{}{h}
+
+## Subgame Perfect Equilibrium (SPE)
+
+### Definition: Subgames, and SPE
+
+A strategy profile $(s\i)$ is an SPE of $\Gam$ if, $(s\i)$ induce a NE at every subgame $\Gam(h)$
+
+\begin{align*}
+\intertext{A subgame of $\Gam$ after the history $h$ is the game:}
+\Gam(h) &= \anglebrac{N,H\vert_h,P\vert_h,u\i\vert_h}
+\intertext{where}
+   h' \in H\vert_h \LRA (h,h') \in H 
+\\ P\vert_h(h') = P(h,h')
+\\ u\i\vert_h(h') = u\i(h,h')
+\end{align*}
+
+### Computing SPE:
+1. Backward induction
+2. NE in each subgame
+3. One-deviation property
+
+\begin{align*}
+   \Gam &: \text{finite-horizon extesnive game with perfect info}
+\\ (s\i) &: \text{strategy profile}
+\\ s'\i \in S\i : s'\i\vert_h \neq s\i\vert_h \cap s'\i\vert_{<h} = s\i\vert_{<h}
+\intertext{$(s\i)$ is an SPE of $\Gam$ iff}
+\nexists i \in N, \quad s'\i : u\i\vert_h(s'\i,s\noti) > u\i\vert_h(s\i,s\noti)
+\end{align*}
+
+\TK{1-D proof GT-L09-S07-08}
+
+### SPE Results & Discussion
+
+- Every SPE is an NE
+- For $\Gam = \extenformgame$ with perfect information, there exists an SPE (proof via backward induction)
+
+\slideref{GT-L10-S21}
+
+- counterintuitive or counterfactual implications in some games (see SPE examples)
+
+Bargaining game: 
+
+- Unique SPE
+    - implies no delay
+    - SPE outcome is efficient
+    - stationary strategies
+    - implies a first-mover advantage
+- Empirical validity
+\slideref{GT-L11-S20-S21}
+
+Epistemic foundations for SPE?
+- backward induction requires common knowledge of rationality BUT also requires specifying strategies for histories that are never reached
+    - what happens with histories reached only after strategic "mistakes", i.e. histories players with belief in common rationalit would not expect to find themselves at
+    - Example: if P2 is called to play in centipede game, and believes P1 is irrational, how do we predict P2's strategies?
+- [Basu (1988,1990), Binmore (1987,1996), Bonanno (1991), Reny (1992)]
+    - CKR inconsistent with SPE, or incoherent in extensive games? 
+- VS. Aumann (1995): 
+    - CKR implies SPE for games with perfect information, no simultaneous moves, and no moves of nature
+    - off-eqlbm nodes: never reached, so CKR only tells us what player *conjecture* about actions of other players off the eqlbm path
+- VS. \TK{Rabin's Critique}:
+    - SPE may also require knowledge of what NE will be played at simultaneous move stage
+    
+
+
+## SPE examples 
+
+\slideref{GT-L08}
+
+### Centipede Game
+
+\slideref{GT-L08}
+
+### Chain Store Game
+
+\slideref{GT-L08}
+
+### Ultimatum Game
+
+\TK{PS SPE, L08}
+\TK{MS SPE, L09}
+
+### Stackelberg duopoly
+
+\slideref{GT-L09}
+
+## Mixed Strategies in Extensive Form Games
+
+- **Mixed strategy**: lottery over outcomes
+- **Behavioural strategy**: collection of lotteries for player $i$ over $A(h)$, one for each $h : P(h) = i$
+- **Profile of strategies**: induces lottery over terminal histories (outcomes)
+     - ***Outcome equivalence***: two \TK{profiles} of mixed or behavioural strategies induce the same lottery over outcomes
+
+EXAMPLE: Mixed vs. Behavioural strategies
+
+\slideref{GT-L09-S10}
+
+### Kuhn's Theorem: Outcome equivalence
+
+In any extensive game $\Gam = \extenformgame$ of ***perfect recall**, mixed and behavioural strategies are ***outcome equivalent***.
+
+- Every mixed strategy is outcome equivalent to the behavioural strategy is generates
+- Every behavioural strategy is outcome equivalent to the mixed strategies which generated it.
+
+Due to equivalence focus on *behavioural strategies*
+
+
+
+# Perfect Information Extensive form with simultaneous moves
+
+## Definition:
+
+Same as Perfect Information Extensive Form games except:
+
+\begin{align*}
+   P : H \slash Z \ra N &: \text{ P(h) can be subset of N, not singleton}
+\\ A\i(h) &: \text{ action set for $i \in P(h)$}
+\end{align*}
+
+\image{GT-L09-S14}{0.5}{Example game with simulataneous moves}{}
+
+\sideimages{GT-L09-S15}{GT-L09-S16}{Simultaneous moves as information sets}{}
+
+## Subgames w/ non-singleton information sets
+
+- subgames contain either whole information set or none of it
+- can mean that SPE = NE
+
+## Forward induction
+
+### Informal: Expected actions/payoffs
+
+- Player 1 will only choose inside option if it gives them a higher payoff than outside option
+- If the inside option has 2 NE, the NE played must give P1 a payff of at least as good as outside option
+
+### Formal: Iterated Elimination of Weakly Dominated Strategies
+
+### Forward Induction Results: "Burn a dollar"
+
+\TK{GT-L09-S20}
+
+# Imperfect Recall in Extensive Form Games
+
+\sideimages{GT-09-S21-AbsentDriver}{GT-09-S22-SeriousAbsentDriver}{Imperfect Recall Drivers}{h}
+
+## Example: Absent Minded Driver
+
+- Mixed and behavioural strategies are not equivalent
+
+## Example: Seriously Absent Minded Driver
+
+# Games with chance moves: Nature moves
+
+Exogenous uncertainty:
+
+  Normal form              Extensive Form
+ ------------------      --------------------
+ expected utility         nature plays randomly 
+                          according to known probability distribution
+ ---------------------------------------------
+
+## Example: Sequential Duel (O 227.3)
+
+\TK{complete}
+
+# Repeated Games: Finite
+
+## Motivation
+
+ Interaction            One-Shot    Repeated
+ -----------          ----------- --------------
+ Market interactions   overcharge   fair
+ Cartels               cheat        collude
+ Work                  shirk        effort
+ Social promises       renege       keep
+ -----------------------------------------------
+ 
+ Show that under repeated interactions, with sufficent punishment, cooperation can be achieved
+ 
+## Example: Finitely repeated Prisoner's Dilemma $(PD^T)$
+
+\twoPtwotwogame{C}{D}{C}{D}{2,2}{0,3}{3,0}{1,1}
+
+- SPE: always D
+- NE: always D
+
+## Example: 2 Player 3 x 3 game
+
+\slideref{GT-L12-S14}
+
+# Repeated Games: Infinite
+
+## Definition: Infinitely repeated games
+
+\suppref{Def 137.1 in OR}
+
+$\Ginfty$ is the perfect information extensive form game where $G$ is repeated infinitely
+
+\begin{align*}
+   G = \normformgame &: \text{Finite Stage Game; NE existence is guaranteed}
+\\ \Ginfty &: \text{Infinitely Repeated Game}
+\intertext{Player Utility in $\Ginfty$}
+   \text{stream of payoffs for player $i$ from infinite strategy} &: (w\i^0, w\i^1, \dots , w\i^t, \dots)
+\\ \text{payoff of player $i$ a discounted sum} &: V\i = \sum_{t=0}^\infty \delta^t w\i^t
+\intertext{For stream $w\i^t = c, \ \forall t$}
+   V\i = \frac{c}{1-\delta} 
+\intertext{If $c=(1-\delta)V\i$, player $i$ is indifferent between the streams $(c,\dots)$, and $(w^t,\dots)$}
+   (1-\delta)V\i &: \text{discounted average of stream $(w^t,\dots)$}
+\\ \delta\i = \delta &: \text{Assume ALL players have the same discount rate}
+\end{align*}
+
+### Assumption of infinite horizon
+
+- Assuming a very long horizon vs. infinite horizon gives different results
+     - unique NE for finite repetition (e.g. $PD^T$: play ($D,D$) in every stage)
+     - but other NE exist for $PD^\infty$
+- Infinite horizon is mathematical equivalent to assuming the game ends with probability $\delta$ after each stage
+     - \TK{infinity of rounds is possible, but game ends in finite time with probability 1}
+     - \suppref{OR p.135}
+
+## Existence of NE and SPE
+
+1. Glicksberg's theorem can be used to show $\Ginfty$ has an NE
+2. Alternatively,  
+Lemma: ***Any profile of strategies that induces the SAME NE of the stage game $G$, after every stage/history of $\Ginfty$ is a SPE of the latter.***   
+All SPE are NE, therefore existence of NE follows
+
+### One-Deviation Property
+
+A strategy profile $(\sig\i)$ in a repeated game is an SPE iff:  
+there is no player $i$, and strategy $\hat{\sig}\i$, which differs from $\sig\i$ only at history $h$ such that:  
+$\hat{\sig}\i$ leads to a better outcome for $i$ conditional on $\sig\noti$, and $h$ being reached
+
+## Example: Infinitely Repeated $PD^\infty$
+
+\twoPtwotwogame{C}{D}{C}{D}{2,2}{0,3}{3,0}{1,1}
+
+### Strategies:
+
+- Always defect (AD)
+- Grim Trigger (GT)
+     - I play C until opponent plays D
+     - Once opponent plays D, I play D for the rest of the game
+     - Punish defection forever
+- Modified Grim Trigger (GT*)
+     - I play C until either I or my opponent plays D
+     - Once anyone plays D, I player D for the remainder of the game
+- Tit for Tat (T4T)
+     - I start by playing C
+     - Play whatever the opponent played in the previous round
+     - Allows for protection against recalcitrant defectors, by also can renew cooperation 
+     - Punish defection for single period 
+- Limited punishment $k$ ($LP_k$) 
+     - I start by playing C
+     - Play D for $k$ periods after observing D
+     - If opponent plays D during $k$, punishment is restarted
+     - If opponents plays C, I play C after $k$ rounds of D
+
+### Equilibrium Calculations
+\slideref{GT-L13}
+
+- (AD,AD) : SPE since (D,D) is NE of stage game
+- \TK{GT is NE but not SPE}
+- \TK{GT* is SPE}
+- \TK{T4T is NE}
+- \TK{T4T is SPE using 1-D property}
+
+## Feasible Payoff Profiles
+
+### Minmax Payoffs
+
+\begin{align*}
+\intertext{The minmax payoff of player $i$ in $G$ is the lowest payoff where $i,j$ are playing a BR}
+   \minmaxv &= \underset{\sig\noti}{\min} (\underset{\sig\i}{\max} u\i(\sig\i,\sig\noti))
+\\ \sig\i, \sig\noti &: \text{pure strategies}
+\intertext{Even if others want to hurt $i$, as long as $i$ is best responding, they can get at least $\minmaxv$}
+\\ \text{choose strategy to minimise player $i$'s maximum utility} &: \sig\noti^{*} \in \arg \min (\max_{\sig\i} u\i (\sig\i,\sig\noti))
+\\ \text{let player $i$ choose their best reponse} &: \sig\i^{*} \in BR\i(\sig\noti^{*})
+\\ \text{Then, for any $\sighat\noti, \sighat\i \in BR(\sighat\noti)$:} &: \minmaxv\i = u\i(\sigstar\i,\sigstar\noti) \leq u\i(\sighat\i,\sighat\noti)
+\end{align*}
+
+In $\Ginfty$
+
+1. Fix strategy of other players
+     - $s\noti \text{ in } \Ginfty$
+2. Find BR of player $i$ after every history
+     - $s\i \in BR(s\noti)$
+3. In each period player $i$ receives at least $\minmaxv$ because they are best responding
+     - $\minmaxv$: guaranteed discounted avg payoff
+4. In any NE of $G^\infty$, any $i \in N$ receives discounted avg payoff of at least $\minmaxv$
+
+### Individual Rationality
+
+A payoff profile $(v_1,\dots,v_{\vertbrac{N}})$ with discounted average payoff $v\i$ is:
+
+ --------------------------   ------------------------------------------
+ Individually Rational (IR)   $v\i \geq \minmaxv \quad \forall i \in N$
+ Strictly IR                  $v\i > \minmaxv \quad \forall i \in N$
+ -----------------------------------------------------------------------
+ 
+### Feasibility
+
+A payoff profile for $G$ is a **feasible** discounted avg payoff of $G\infty$ if it is in the (convex) polygon defined by the stage game's outcome payoffs. 
+ 
+### Examples
+
+#### $PD^\infty$
+
+\twoPtwotwogame{C}{D}{C}{D}{2,2}{0,3}{3,0}{1,1}
+
+- For $\delta$ close to 1, players can get any payoff profile that is a weighted average of outcomes payoffs of the stage game
+- Any payoff profile in the *quadrilateral* defined by $(2,2), (0,3), (3,0), (1,1)$ is **feasible**
+
+#### L14 examples
+
+\image{GT-L14-S15}{1}{}{h}
+
+## Folk Theorems
+
+### $PD^\infty$: Nash and SPE Folk Theorems
+
+(1) For any $\delta \in (0,1)$:
+
+- $PD^\infty$ has an NE (and SPE), where $v\i = u\i(D,D)$
+     - i.e. (Always D, Always D) is an NE, and SPE
+- in any NE (and SPE) of $PD^\infty$, $v\i \geq u\i(D,D) = \minmaxv$
+     - any player is able to guarantee themselves their minmax payoff (IR)
+     - the minmax payoff is the NE of the stage game $PD$: $(D,D)$
+  
+(2) For any *feasible*, and **strictly** individually rational discounted average payoff profile ($v\i$)
+
+- $\exists \ \bar{\delta} < 1$ such that $\forall \delta > \bar{\delta}$
+- $PD^\infty(\delta)$ has an NE (and SPE), where the discounted avg payoff is $v\i$
+
+#### PROOF SKETCH: Nash Folk Theorem
+
+1. Fix $\delta$, and some feasible and strictly IR ($v_1,v_2$)
+2. Consider a finite sequence of outcomes $(a^1,\dots,a^k)$, that if repeated infinitely would generate avg discounted payoffs equal to $(v_1,v_2)$
+3. Define simple trigger strategies for both players
+     - each player adheres to whatever strategy is requires to generate $(a^1,\dots,a^k)$
+     - unless the other player $j$ deviates
+     - then player $i$ plays $D$ from here on out
+4. Show that if players are sufficiently patient
+     - the small instantaneous benefit of deviation is outweighed by loss in utility stream
+     - requires *strict* IR, so that $v\j > u\j(D,D)$ and punishment is "painful"
+     - INTUITION: if $j$ cares enough about future, they prefer getting the higher discounted avg payoff $v\j > u\j(D,D)$ than deviating and receiving $u\j(D,D)$ forever after
+
+For SPE: \slideref{GT-L14-23}
+
+#### COMMENTS
+
+Result
+
+- If players are sufficiently patient, any feasible and strictly IR average payoff profile is the payoff of some NE
+     - doesn't mean any outcome path is possible, since statement is about payoffs only
+     - doesn't restrict strategies played either, could have multiple NE strategies generating the same payoffs
+- same result holds for SPE
+
+Limitations
+
+- restricted predictions
+- may require unrealisticly high levels of patience
+
+### Nash Folk Theorem for Infinitely Repeated Games $\Ginfty$
+
+(1) For any *feasible*, and **strictly** individually rational discounted average payoff profile ($v\i = (v_1,\dots,v_{\vertbrac{N}})$) in $\Ginfty$
+
+- $\exists \ \bar{\delta} < 1$ such that $\forall \delta > \bar{\delta}$
+- $G^\infty(\delta)$ has an NE (and SPE), where the discounted avg payoff is $v\i$
+
+Proof: \slideref{GT-L15-S17-18}
+
+Comments: 
+
+- doesn't imply that non-strictly IR payoffs cannot occur (e.g. in $PD: (\minmaxv_1,\minmaxv_2)$ is NE)
+- implies players can cooperate infinitely in NE
+- however, players could do worse than the unique NE of the stage game
+
+**Fundenberg & Maskin (1986)**
+
+Let $(v_1,v_2)$ be a feasible, strictly IR discounted avg payoff profile of some **two-player** game $\Ginfty$.
+
+There exists $\bar{\delta} < 1$ such that, for all $\delta > \bar{\delta}$
+
+$\Ginfty(\delta)$ has an SPE, with discounted avg payoff for player $i$ of $v\i$
+
+\slideref{GT-L15-S19}
+
+# Extensive Form games w/ Imperfect Information
+
+## Weak Sequential Equilibrium (WSE)
+
+- refinement of NE for extensive form games
+- in many games SPE has no bite above NE, so SPE could feature incredible threat
+
+### Definition: Belief Systems
+
+- At any information set with more than one possible history:
+    - a rational bayesian agent must be best responded to some belief about the likelihood of the possible histories
+- For simultanenous-move games, NE and SPE forces the beliefs to be correct (actual probability)
+- In an extensive form game $\Gam = \extenformgame$, a **belief system** is:
+    - a function that assigns to each information set, a probability distribution over the the histories in that information set
+    - specifies all players' beliefs
+$$\mu\i(\{I(\cdot)\})(h)$$
+
+### Definition: Assessment
+
+In an extensive form game, an **assessment** is a pair of:
+
+- profile of behavioural strategies, one element for each player
+- belief system, specifying all players' beliefs when $P(h) = i$
+
+### Definition: Weak Sequential Equilibrium
+
+- Equilibrium in a game with incomplete information consists of an *assessment* not just a *strategy profile*. 
+- For finite extensive-form games with perfect recall, there always exists at least one WSE
+- WSE is also known as: *assessment eqlbm*, *weak perfect Bayesian eqlbm*, *perfect Bayesian eqlbm*
+
+\begin{align*}
+\\ \B &: \text{behavioural strategy profile}
+\\ \mu &: \text{belief system}
+\end{align*}
+
+An assessment $(\beta,\mu)$ is a weak sequential equilibrium if:
+
+(1) **Sequential rationality**
+     - Every player is best responding at every information set, given beliefs (for each information set), and holding constant the other players' strategies
+     - For every information set $I\i$, of every player $i$:
+     - For the probability distribution over terminal histories generated by $\mu\i(I)$, and behaviour prescribed by $\B\i$:
+     - their expected payoff is at least as large as the expected payoff under any other behavioural strategy:
+     - $EU((\B\i,\B\noti),\mu\i) \geq EU((\gam\i,\B\noti),\mu\i)$
+(2) **Weak consistency of beliefs with strategies**
+     - Each player's belief is consistent with the strategy profile, (i.e. beliefs are derived using Bayes' rule whenever possible)
+     - For every information set $I\i$ reached with positive probability under $\B$:
+     - The probabilities in the belief system $\mu$ are derived via Bayes' rule
+     - No restriction on information sets not reached by $\B$
+
+- Strictly Dominant strategy is the unique SR strategy
+- strictly dominated strategies are never SR
+- Dominance criterion: never put positive probability on other player's playing strictly dominated strategies; no reference to eqlbm
+- Cho-Kreps: references eqlbm, beliefs, off eqlbm actions = incentive to deviate
+
+### WSE are SPE and NE
+
+- Games that are extensive form, perfect info, no-simultaneous moves have only one possible belief system: 
+      - $\mu$ assigns probability 1 to the only histor at each information set
+      - SR implies NE in the subgame after any h
+      - WSE is SPE
+- For general extensive games:
+      - SR implies each player $i$'s strategy at the beginning of the game, given others' strategies, and $i$'s beliefs
+      - Consistency implies that each player's beliefs are correct at every *reached* information set (on the eqblm path)
+      - WSE is NE
+
+### Computing WSE
+
+(1) First Principles
+
+1. Consider all possible strategy profiles
+2. Check if there are consistent beliefs systems for these strategies
+3. Together satisfy WSE conditions
+
+(2) From NE
+
+1. Find all NE, which may be WSE
+2. Check for weakly consistent beliefs that can support NE as WSE
+
+## WSE Refinement
+
+### Dominance Criterion
+
+A WSE satisfied the **dominance criterion** if:
+
+- for all information sets, 
+- the belief system $\mu$ places zero probability on
+- histories which can only be reached if a player played a strictly dominated action.
+
+## Signalling Games
+
+\slideref{GT-L17}
+
+- subclass of Extensive form games with incomplete information:
+- player type is payoff-relevant
+     - e.g. lazy/hardworking employee, smart/stupid etc.
+     - **sender**: type $i$ is known to $i$, but not to other players
+     - **receiver**: others make inferences based on type $i$'s strategic decisions, after receiving sender's signal
+- Examples:
+     - animals signalling "fitness", by investing in expensive highly visible attributes
+     - firms signalling product quality with free samples, or generous return policies
+     - high bids in poker, brinkmanship, price wars, relational gift exchange
+
+### Definition: Pooling and Seperating Equilibria (PSWSE)
+
+                  **Seperating**                        **Pooling**                      *Partially*
+ ----------      --------------------------            --------------------------       ------------------------
+ Sender           each type chooses different action    all types choose same action     more than 2 types
+ Receiver         knows type perfectly                  action gives no information      actions give some information
+ ------------------------------------------------------------------------------------------------------------------
+
+#### Example: Spence's model of education
+
+#### Example: Beer or Quiche
+
+### Defintion: Cho-Kreps Intuitive Critereon
+
+1. Consider if either type would have an incentive to deviate if the other players' actions changed
+2. Consider what belief would be required to change the other players' action
+3. Can these form a profitable deviation for one type in eqlbm, and switch the eqlbm to a different pooling eqlbm
+
+\TK{Is Cho-Kreps only for pooling eqlbm?}
+
+### Reputation Games
+
+- Also signalling games
+- usually modelled via player types
+
+\begin{align*}
+   (1-p) &: \text{Pr(P1 is rational and strategic (S))}
+\\ p     &: \text{Pr(P1 is committed to a certain strategy, regardless of events (NS))}
+\\ \text{P2's prior} &: p
+\\ \text{P2's posterior} &: \mu_2(\{S,NS\})(S) \in [0,1]
+\end{align*}
+
+#### Example: $PD^T$
+
+- no discounting
+
+T = 2
+T = 3, $p > \frac{1}{2}$
+
+Limiting Result for $PD^T$
+
+- The number of period in which either P2, or P1(S) defects (D) on the eqlbm path in WSE is bounded by $M < T$, that depends on $p$, not $T$
+- For given $p$, there exists some $\hat{T}$ such that for all $T > \hat{T}$, the players cooperate in all most all periods even if P1 is strategic
+- Even with very small $p$, with a sufficiently large $T$, can achieve average per-period payoff arbitrarily close to $(2,2)$
+
+Intuition:
+
+- If P1(S) acts like P1(NS), then the mutually harmful path of (D,D) is avoided
+- both players can opperate
+- However, the incentives for P1(S) to act like P1(NS) diminish towards the end of the game
+
+## Cheap talk Games
+
+- Under signalling games
+      - actions are differently costly to different types of senders
+      - so actions are payoff relevant
+      - it is possible for receiver to perfectly learn the sender's type (separating eqlbm)
+- can play types be communicated with cost-less actions that don't affect payoffs?
+
+### Defintion: Cheap Talk Games
+- Sender chooses costless action: $m \in M$
+     - assume $M$ is sufficiently rich to have as many messages as sender types
+- message $m$ does not affect the payoff of either player
+     - meaning of messages can also drift (e.g. Language inflation)
+     - signals information, or intention
+- assume communication is:
+     - **unverifiable**: senders can not present evidence about their type
+     - **non-binding**: actions of receiver, or sender are not limited
+- does not allow for lying
+     - incentives to lie are accounted for by others in eqlbm
+     - obscuring the truth can occur (e.g. via pooling), but \TK{no deception} will take place
+
+## Signalling Information
+- Sender has perfect knowledge of the SoW
+- Receiver does not know the SoW
+- SoW affects payoffs of both players
+
+### Definition: Babbling equilibria
+- uninformative equilibria:
+     - R ignores messages
+     - S best responds by sending the same message regardless of SoW
+     - R's choice to ignore is justified, because S's messages are uninformative
+     
+### Conditions for Informativeness
+
+1. Different sender types need to have different preferences over the receiver's actions
+2. The preferences of the sender and the reciever need to be partially aligned
+3. The sender's information needs to be valuable to the receiver
+
+#### Example: The Investment Game
+
+## Pre-play Communication (Signalling Intent)
+
+### Definition: Self-committing and self-signalling
+
+$m_F$: Message with meaning "I intend to play F"
+
+  Self-committing                           Self-signalling
+ ---------------------------------         -----------------------------------
+  If R believes $m_F$ sent by S,            S wants R to believe $m_F$ **iff**
+  R has incentive to choose action F        S plans to play F
+  $(F,BR(F))$ is NE                           $BR(F) \in \underset{X}{\arg\max} u_S(F,X)$
+                                              $BR(F) \notin \underset{X}{\arg\max} u_S(G,X)$
+ -------------------------------------------------------------------------------------------
+ 
+ #### Examples:
+ 
+ \slideref{GT-20-S22}
+ 
+ ### Two-way Pre-play communication
+ 
+ ## Bayesian Persuasion
+ 
+ \slideref{GT-20-S25-27}
+  
