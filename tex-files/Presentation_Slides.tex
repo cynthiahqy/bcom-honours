@@ -1,0 +1,87 @@
+%\documentclass{beamer} % For presentation slides
+\documentclass[handout,compress]{beamer}
+% --------------- Packages --------------- %
+
+\usepackage{graphicx}					% Picture insertions
+\usepackage{amsmath,amssymb,amsfonts} 	% Math packages
+\usepackage{color, colortbl}
+\usepackage{float}						% Avoids typical picture troubles
+\usepackage{color}						% For coloring the dot points
+\usepackage{array}
+
+
+
+\usetheme{Madrid}			% Specifies the layout theme
+\usecolortheme{default}	% Specifies the colors used in the layout theme
+
+% ------ Slide footer modifications ------ %
+%
+% The process of modifying the footer is a bit tough. The code below works;
+% all you need to do is just replace the relevant fields with what you want
+% to put in there and LaTeX will do the rest.
+
+\makeatletter
+\setbeamertemplate{footline}
+{
+\leavevmode%
+\hbox{%
+\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+\usebeamerfont{author in head/foot}\insertsection{Honours Research Essay} % Lower left entry
+\end{beamercolorbox}%
+\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+\usebeamerfont{title in head/foot}\insertsubsection{Semester 1 Presentation} % Middle entry
+\end{beamercolorbox}%
+\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+\usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+\insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+\end{beamercolorbox}}%
+\vskip 0pt%
+}
+\makeatother
+
+% Define the color of the dot points (requires the -color- package)
+\xdefinecolor{lightblue}{RGB}{204,190,255}
+%\setbeamercolor*{item}{fg=lightblue}
+
+% To get rid of the navigation bar on the lower right of each slide
+\beamertemplatenavigationsymbolsempty
+
+% To get a bit more spacing between dot points
+\newcommand{\vs}{\vspace*{0.05in}}
+\newcommand{\head}[2]{\multicolumn{1}{>{\centering\arraybackslash}p{#1}}{\textbf{#2}}}
+% Eliminate paragraph indenting
+\parindent = 0in 
+
+% ----- Title page ----- %
+\title{TITLE}
+\subtitle{subtitle}
+\author{Name}
+\date{date}
+
+\begin{document}
+
+\begin{frame}
+	\maketitle
+\end{frame}
+
+\begin{frame}{Title}
+
+\textbf{something}
+
+	\begin{itemize}
+	\item item 1
+	\vfill
+	\end{itemize}
+	\textbf{something else}
+	\begin{itemize}
+		\item item 1
+		\vs
+		\item item 2
+		\vs
+		\item item 3
+		\vfill
+	\end{itemize}
+\end{frame}
+
+
+\end{document}

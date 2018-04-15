@@ -1,0 +1,59 @@
+%Cynthia Huang, 2016 - based on template by Daniel Tiong
+
+\documentclass[11pt, a4paper]{article}
+
+\usepackage{fullpage}        			    % For more writing space
+\usepackage{amsmath, amssymb, amsfonts}     % For everything mathematics
+\usepackage{multirow, multicol, tabularx} 	% For tables and figures
+\usepackage{fancyhdr} 						% Lets you have fancy headers and footers
+\usepackage[english]{babel}
+\usepackage{lastpage} 						% Gives you the last page of the document
+\usepackage{float} 	% to avoid hell breaking loose with figure placement (you will need to look up the documentation for this package if you're not sure what it does)
+\usepackage{enumitem} 						% for additional numbering options
+
+\parindent = 0in  % Eliminates automatic paragraph indentation (change it if you want indents)
+\linespread{1.15} % Line spacing. Bit wider than standard spacing. Text blocks look a bit more readable.
+
+% ----- Set assignment details ----- %
+
+\newcommand{\studentname}{Your Name}
+\newcommand{\studentno}{number}
+\newcommand{\subjectname}{Subject Name}
+\newcommand{\assignment}{Assignment Name}
+
+% ----- Put your fancy headers and footers here ----- %
+
+\pagestyle{fancy}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+	\fancyhead{}
+	\fancyfoot[CO,CE]{\subjectname} 
+	\fancyfoot[RO,RE]{Page \thepage\ of \pageref{LastPage}}
+	\fancyfoot[LO,LE]{\assignment} 
+	
+% Specifies nested lists that begin with the section number. Requires the enumitem package.
+% Currently: lists will begin with (a), (b), (c) and so on (instead of 1, 2, 3, ...)
+\setenumerate[1]{label=\textbf{(\alph*)}} 
+
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} % Creates a macro for partial derivatives. An example of this is \pd{y}{x} to get the partial derivative of y with respect to x.
+
+% -------------------- Title page -------------------- %
+\title{\Large{\sc{\subjectname \\ \vspace{0.5cm} \large{\assignment}}}}
+\author{\studentname (\studentno)}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\vspace{0.1cm}
+
+\section*{Question 1} % The star in the \section command suppresses the number that usually comes at the front
+	\begin{align*}
+	U(A,A) > U(B,A) \Leftrightarrow a > c \text{or}\\
+	U(A,A) = U(B,A) \text{and} U(A,B) > U(B,B) \Leftrightarrow a = c \text{and} d > b \\
+	\end{align*}
+
+
+\end{document}

@@ -1,0 +1,66 @@
+%PREAMBLE
+\documentclass{report} %\part{}, \chapter{}, \section{}, \subsection{}, \subsubsection{}, \paragraph{}, \subparagraph{}
+
+%PACKAGES
+\usepackage{fullpage} %narrow margins 1/2default
+\usepackage{amsmath,amssymb,amsfonts} %ams-American Mathematical Society
+\usepackage{graphicx} %for pictures
+\usepackage{float} %placement of pictures
+\usepackage[utf8]{inputenc}
+\usepackage{lscape} %landscape sections not everything
+
+\begin{document}
+	%\maketitle
+	\tableofcontents
+	
+\part[Formatting]{Formatting}
+\chapter{Document Classes}
+\section{SOMETHING}
+\subsection{something else}
+\subsubsection{more stuff}
+\paragraph{what haps}
+\subparagraph{whenis}
+	
+
+\chapter*{HIDDEN}
+
+\chapter{Lists}
+\paragraph{unlabelled list 2 column}
+	\begin{list}{}{}
+		\item[text] description
+		\item item 1 text
+		\item[something] then
+	\end{list}
+
+\paragraph{unlabelled list 2 part, bold first}
+	\begin{description}
+		\item[Book]{\verb|\part{}, \chapter{}, \section{}, \subsection{}, \subsubsection{}, \paragraph{}, \subparagraph{}|}
+	\end{description}	
+	
+\paragraph{numbered list}
+	\begin{enumerate}
+		\item First level
+			\begin{enumerate}
+				\item 2nd level
+					\begin{enumerate}
+						\item 3rd level
+							\begin{enumerate}
+								\item Last level
+							\end{enumerate}
+					\end{enumerate}
+			\end{enumerate}
+	\end{enumerate}
+	
+\paragraph{marked list}
+	\begin{itemize}
+		\item Bullet level 1
+			\begin{itemize}
+				\item 
+			\end{itemize}
+	\end{itemize}
+
+	
+\chapter{Tables}
+	
+\end{document}
+
